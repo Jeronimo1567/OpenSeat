@@ -43,7 +43,15 @@ export default async function ReservePage({ searchParams }: PageProps) {
     return <OccupiedPage spot={spot as Spot} activeRes={activeRes} />
   }
 
-  return <ReserveForm spotId={spotId} spotName={(spot as Spot).name} />
+  return (
+    <ReserveForm
+      spotId={spotId}
+      spotName={(spot as Spot).name}
+      spotLocation={(spot as Spot).location}
+      spotChairs={(spot as Spot).chairs ?? 4}
+      spotImage={(spot as Spot).image_url ?? null}
+    />
+  )
 }
 
 function OccupiedPage({

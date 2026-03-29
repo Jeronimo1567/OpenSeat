@@ -13,9 +13,12 @@ const DURATIONS = [
 interface Props {
   spotId: string
   spotName: string
+  spotLocation: string
+  spotChairs: number
+  spotImage: string | null
 }
 
-export default function ReserveForm({ spotId, spotName }: Props) {
+export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs, spotImage }: Props) {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -66,175 +69,217 @@ export default function ReserveForm({ spotId, spotName }: Props) {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-start px-6 pt-12 pb-10"
+      className="min-h-screen flex flex-col items-center justify-start pb-10"
       style={{ background: '#EDE8E0' }}
     >
-      <div className="w-full max-w-sm flex flex-col gap-0">
+      <div className="w-full max-w-sm flex flex-col">
 
-        {/* Icon */}
-        <div className="flex justify-center mb-6">
-          <div className="w-14 h-14 rounded-full bg-white/70 flex items-center justify-center shadow-sm">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#6B5240"/>
-              <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#6B5240" opacity="0.6"/>
-            </svg>
-          </div>
-        </div>
-
-        {/* Heading */}
-        <div className="text-center mb-8">
-          <h1
-            className="font-heading text-[2rem] font-bold leading-tight mb-2"
-            style={{ color: '#1C1A18', letterSpacing: '-0.02em' }}
-          >
-            Secure Your Space
-          </h1>
-          <p className="text-sm leading-relaxed" style={{ color: '#7A6E64' }}>
-            Premium study environments tailored for<br />
-            Oakland&apos;s academic excellence.
-          </p>
-          <Link
-            href="/dashboard"
-            className="inline-block mt-3 text-xs font-medium underline underline-offset-2 transition-opacity hover:opacity-70"
-            style={{ color: '#8B7355' }}
-          >
-            View all tables →
-          </Link>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
-          {/* Name */}
-          <div>
-            <label className="field-label" htmlFor="name">Full Name</label>
-            <input
-              id="name"
-              type="text"
-              className="input-pill"
-              placeholder="Grizzly Bear"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-              autoComplete="name"
-              autoFocus
+        {/* Spot photo card */}
+        <div className="w-full relative overflow-hidden" style={{ borderRadius: '0 0 2rem 2rem' }}>
+          {spotImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={spotImage}
+              alt={spotName}
+              className="w-full object-cover"
+              style={{ height: '220px' }}
             />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="field-label" htmlFor="email">Oakland Email (@Oakland.edu)</label>
-            <input
-              id="email"
-              type="email"
-              className={`input-pill${!emailValid ? ' error' : ''}`}
-              placeholder="grizzly@oakland.edu"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              inputMode="email"
-            />
-            {!emailValid && (
-              <p className="field-error">Must be an @oakland.edu address</p>
-            )}
-          </div>
-
-          {/* Duration */}
-          <div>
-            <label className="field-label">Session Duration</label>
-            <div className="grid grid-cols-3 gap-2">
-              {DURATIONS.map(d => {
-                const selected = duration === d.value
-                return (
-                  <button
-                    key={d.value}
-                    type="button"
-                    onClick={() => setDuration(d.value)}
-                    className={`
-                      flex flex-col items-center justify-center
-                      h-20 rounded-2xl transition-all duration-200
-                      ${selected
-                        ? 'duration-pill-selected'
-                        : 'border border-[#C8BEB2]/60'
-                      }
-                    `}
-                    style={{
-                      backgroundColor: selected ? '#D9CEC2' : '#E4DDD4',
-                    }}
-                  >
-                    <span
-                      className="font-heading text-xl font-bold leading-none"
-                      style={{ color: selected ? '#3D2E22' : '#6B5240' }}
-                    >
-                      {d.label}
-                    </span>
-                    <span
-                      className="text-[10px] font-semibold tracking-widest mt-1"
-                      style={{ color: selected ? '#6B5240' : '#A89B8C' }}
-                    >
-                      {d.sublabel}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Policy card */}
-          <div className="policy-card">
+          ) : (
             <div
-              className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
-              style={{ backgroundColor: '#D9CEC2' }}
+              className="w-full flex items-center justify-center"
+              style={{ height: '220px', backgroundColor: '#D9CEC2' }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B5240" strokeWidth="2.5">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round"/>
-                <line x1="12" y1="11" x2="12" y2="17" strokeLinecap="round"/>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#B8A898" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="8" width="20" height="2.5" rx="1.25"/>
+                <line x1="5.5" y1="10.5" x2="5.5" y2="18"/>
+                <line x1="18.5" y1="10.5" x2="18.5" y2="18"/>
+                <rect x="1" y="4" width="5" height="4" rx="1"/>
+                <line x1="2" y1="8" x2="2" y2="11"/>
+                <line x1="5" y1="8" x2="5" y2="11"/>
+                <rect x="18" y="4" width="5" height="4" rx="1"/>
+                <line x1="19" y1="8" x2="19" y2="11"/>
+                <line x1="22" y1="8" x2="22" y2="11"/>
               </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold mb-0.5" style={{ color: '#1C1A18' }}>
-                Reservation Policy
-              </p>
-              <p className="text-xs leading-relaxed" style={{ color: '#7A6E64' }}>
-                Check-ins required within 15m. Manage bookings via your dashboard.
-              </p>
-            </div>
-          </div>
-
-          {/* Error */}
-          {error && (
-            <div
-              className="rounded-2xl px-4 py-3 text-sm flex items-start gap-2"
-              style={{ backgroundColor: '#FEE2E2', color: '#991B1B' }}
-            >
-              <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-              </svg>
-              {error}
             </div>
           )}
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading || !emailValid || !name || !email}
-            className="btn-primary mt-1"
+          {/* Gradient overlay with spot info */}
+          <div
+            className="absolute bottom-0 left-0 right-0 px-5 pb-4 pt-10"
+            style={{
+              background: 'linear-gradient(to top, rgba(28,26,24,0.72) 0%, transparent 100%)',
+            }}
           >
-            {loading ? (
-              <>
-                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            <p className="text-white font-heading text-lg font-bold leading-tight">
+              {spotName}
+            </p>
+            <div className="flex items-center gap-3 mt-0.5">
+              <span className="text-white/75 text-xs">{spotLocation}</span>
+              <span className="text-white/40 text-xs">·</span>
+              <span className="text-white/75 text-xs">
+                {spotChairs} {spotChairs === 1 ? 'chair' : 'chairs'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 pt-7 flex flex-col gap-0">
+
+          {/* Heading */}
+          <div className="text-center mb-7">
+            <h1
+              className="font-heading text-[1.85rem] font-bold leading-tight mb-1.5"
+              style={{ color: '#1C1A18', letterSpacing: '-0.02em' }}
+            >
+              Secure Your Space
+            </h1>
+            <p className="text-sm leading-relaxed" style={{ color: '#7A6E64' }}>
+              Oakland University · Study reservation
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-block mt-2.5 text-xs font-medium underline underline-offset-2 transition-opacity hover:opacity-70"
+              style={{ color: '#8B7355' }}
+            >
+              View all tables →
+            </Link>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+            {/* Name */}
+            <div>
+              <label className="field-label" htmlFor="name">Full Name</label>
+              <input
+                id="name"
+                type="text"
+                className="input-pill"
+                placeholder="Grizzly Bear"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+                autoComplete="name"
+                autoFocus
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="field-label" htmlFor="email">Oakland Email (@Oakland.edu)</label>
+              <input
+                id="email"
+                type="email"
+                className={`input-pill${!emailValid ? ' error' : ''}`}
+                placeholder="grizzly@oakland.edu"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                inputMode="email"
+              />
+              {!emailValid && (
+                <p className="field-error">Must be an @oakland.edu address</p>
+              )}
+            </div>
+
+            {/* Duration */}
+            <div>
+              <label className="field-label">Session Duration</label>
+              <div className="grid grid-cols-3 gap-2">
+                {DURATIONS.map(d => {
+                  const selected = duration === d.value
+                  return (
+                    <button
+                      key={d.value}
+                      type="button"
+                      onClick={() => setDuration(d.value)}
+                      className={`
+                        flex flex-col items-center justify-center
+                        h-20 rounded-2xl transition-all duration-200
+                        ${selected
+                          ? 'duration-pill-selected'
+                          : 'border border-[#C8BEB2]/60'
+                        }
+                      `}
+                      style={{
+                        backgroundColor: selected ? '#D9CEC2' : '#E4DDD4',
+                      }}
+                    >
+                      <span
+                        className="font-heading text-xl font-bold leading-none"
+                        style={{ color: selected ? '#3D2E22' : '#6B5240' }}
+                      >
+                        {d.label}
+                      </span>
+                      <span
+                        className="text-[10px] font-semibold tracking-widest mt-1"
+                        style={{ color: selected ? '#6B5240' : '#A89B8C' }}
+                      >
+                        {d.sublabel}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Policy card */}
+            <div className="policy-card">
+              <div
+                className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
+                style={{ backgroundColor: '#D9CEC2' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B5240" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round"/>
+                  <line x1="12" y1="11" x2="12" y2="17" strokeLinecap="round"/>
                 </svg>
-                Reserving...
-              </>
-            ) : (
-              <>Reserve Table &nbsp;→</>
+              </div>
+              <div>
+                <p className="text-sm font-semibold mb-0.5" style={{ color: '#1C1A18' }}>
+                  Reservation Policy
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: '#7A6E64' }}>
+                  Check-ins required within 15m. Manage bookings via your dashboard.
+                </p>
+              </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div
+                className="rounded-2xl px-4 py-3 text-sm flex items-start gap-2"
+                style={{ backgroundColor: '#FEE2E2', color: '#991B1B' }}
+              >
+                <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                {error}
+              </div>
             )}
-          </button>
-        </form>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading || !emailValid || !name || !email}
+              className="btn-primary mt-1"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Reserving...
+                </>
+              ) : (
+                <>Reserve Table &nbsp;→</>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )
