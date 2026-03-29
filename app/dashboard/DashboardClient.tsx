@@ -58,7 +58,7 @@ function DashboardHeader({ spotCount, lastUpdated }: { spotCount: number; lastUp
     <header className="px-4 pt-10 pb-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <Link
-          href="javascript:history.back()"
+          href="/reserve?spot=table-1"
           className="flex items-center gap-1.5 text-xs font-medium transition-opacity hover:opacity-70"
           style={{ color: '#8B7355' }}
         >
