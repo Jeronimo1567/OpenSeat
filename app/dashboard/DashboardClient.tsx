@@ -68,12 +68,12 @@ function DashboardHeader({ spotCount, lastUpdated }: { spotCount: number; lastUp
           Back
         </Link>
       </div>
-      <p
-        className="font-heading text-xs font-semibold tracking-widest uppercase mb-1"
-        style={{ color: '#8B7355' }}
-      >
-        OpenSeat
-      </p>
+      <img
+        src="/Untitled_Artwork.png"
+        alt="OpenSeat"
+        className="mb-2"
+        style={{ height: '2rem', width: 'auto', mixBlendMode: 'multiply' }}
+      />
       <h1
         className="font-heading text-3xl font-bold leading-tight"
         style={{ color: '#1C1A18', letterSpacing: '-0.02em' }}

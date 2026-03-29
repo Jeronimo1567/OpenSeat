@@ -128,12 +128,12 @@ export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs
 
           {/* Heading */}
           <div className="text-center mb-7">
-            <h1
-              className="font-heading text-[1.85rem] font-bold leading-tight mb-1.5"
-              style={{ color: '#1C1A18', letterSpacing: '-0.02em' }}
-            >
-              Secure Your Space
-            </h1>
+            <img
+              src="/Untitled_Artwork.png"
+              alt="OpenSeat"
+              className="mx-auto mb-2"
+              style={{ height: '2.2rem', width: 'auto', mixBlendMode: 'multiply' }}
+            />
             <p className="text-sm leading-relaxed" style={{ color: '#7A6E64' }}>
               Oakland University · Study reservation
             </p>
