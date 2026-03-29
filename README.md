@@ -2,6 +2,8 @@
 
 NFC-powered study spot reservation system for Oakland University.
 
+Try it out - > https://open-seat-chi.vercel.app/dashboard
+
 Students tap an NFC tag on a study table → land on a mobile-first web app → reserve the seat in seconds.
 
 ---
