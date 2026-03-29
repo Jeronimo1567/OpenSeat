@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 })
   }
 
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'Chat unavailable' }, { status: 500 })
   }
@@ -90,26 +90,30 @@ Guidelines:
 - If all tables are occupied, let them know and suggest checking back soon
 - Don't make up information — only use what's listed above`
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: 'user', parts: [{ text: message }] }],
-        generationConfig: { maxOutputTokens: 200, temperature: 0.7 },
-      }),
-    }
-  )
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message },
+      ],
+      max_tokens: 200,
+      temperature: 0.7,
+    }),
+  })
 
   if (!res.ok) {
-    // Gemini unavailable — fall back to rule-based reply using live Supabase data
+    // Groq unavailable — fall back to rule-based reply using live Supabase data
     return NextResponse.json({ reply: buildFallbackReply(message, spots ?? [], occupiedIds) })
   }
 
   const data = await res.json()
-  const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? buildFallbackReply(message, spots ?? [], occupiedIds)
+  const reply = data?.choices?.[0]?.message?.content ?? buildFallbackReply(message, spots ?? [], occupiedIds)
 
   return NextResponse.json({ reply })
 }
