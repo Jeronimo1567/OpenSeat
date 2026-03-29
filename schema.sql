@@ -53,3 +53,18 @@ create policy "Allow anon updates"
   on reservations for update
   using (true)
   with check (true);
+
+-- ============================================================
+-- Migration v2: Add chairs count and optional photo to spots
+-- Run these if upgrading an existing database
+-- ============================================================
+alter table spots
+  add column if not exists chairs integer not null default 4;
+
+alter table spots
+  add column if not exists image_url text;
+
+-- Update seed row with chair count
+insert into spots (id, name, location, chairs)
+values ('table-1', 'Study Table 1', 'Oakland Center, 1st Floor', 4)
+on conflict (id) do update set chairs = excluded.chairs;

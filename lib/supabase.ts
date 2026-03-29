@@ -4,6 +4,8 @@ export type Spot = {
   id: string
   name: string
   location: string
+  chairs: number
+  image_url: string | null
 }
 
 export type Reservation = {

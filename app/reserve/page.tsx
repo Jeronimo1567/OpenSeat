@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
+import Link from 'next/link'
 import ReserveForm from './ReserveForm'
 import type { Spot } from '@/lib/supabase'
 
@@ -82,6 +83,12 @@ function OccupiedPage({
         <p className="text-sm" style={{ color: '#7A6E64' }}>
           Available at <strong style={{ color: '#6B5240' }}>{until}</strong>.
         </p>
+        <Link
+          href="/dashboard"
+          className="btn-primary mt-8 flex items-center justify-center no-underline"
+        >
+          Check other tables →
+        </Link>
       </div>
     </div>
   )

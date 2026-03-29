@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const DURATIONS = [
   { label: '1hr', sublabel: 'FOCUSED', value: '60' },
@@ -92,6 +93,13 @@ export default function ReserveForm({ spotId, spotName }: Props) {
             Premium study environments tailored for<br />
             Oakland&apos;s academic excellence.
           </p>
+          <Link
+            href="/dashboard"
+            className="inline-block mt-3 text-xs font-medium underline underline-offset-2 transition-opacity hover:opacity-70"
+            style={{ color: '#8B7355' }}
+          >
+            View all tables →
+          </Link>
         </div>
 
         {/* Form */}
