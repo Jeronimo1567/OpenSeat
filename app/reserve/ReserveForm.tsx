@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -225,7 +225,7 @@ export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs
               </div>
             </div>
 
-            {/* Policy card */}
+          {/* Policy card */}
             <div className="policy-card">
               <div
                 className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
@@ -279,8 +279,136 @@ export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs
               )}
             </button>
           </form>
+
+          {/* AI Chat */}
+          <SpotChat />
         </div>
       </div>
+    </div>
+  )
+}
+
+// ─── AI Chat Component ────────────────────────────────────────────────────────
+
+type Message = { role: 'user' | 'ai'; text: string }
+
+function SpotChat() {
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'ai', text: 'Hi! Ask me which table is right for you — e.g. "I need a table for 6 people"' },
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  async function handleSend(e: FormEvent) {
+    e.preventDefault()
+    const text = input.trim()
+    if (!text || loading) return
+
+    setMessages(prev => [...prev, { role: 'user', text }])
+    setInput('')
+    setLoading(true)
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text }),
+      })
+      const data = await res.json()
+      setMessages(prev => [...prev, { role: 'ai', text: data.reply ?? data.error ?? 'Something went wrong.' }])
+    } catch {
+      setMessages(prev => [...prev, { role: 'ai', text: 'Network error. Please try again.' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#E4DDD4' }}>
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: 'rgba(200,184,154,0.3)' }}>
+        <div
+          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+          style={{ backgroundColor: '#6B5240' }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" strokeWidth="2.5">
+            <path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+        </div>
+        <span className="text-xs font-semibold" style={{ color: '#1C1A18' }}>Ask OpenSeat AI</span>
+        <span
+          className="ml-auto text-[10px] font-semibold tracking-widest uppercase px-2 py-0.5 rounded-full"
+          style={{ backgroundColor: '#D9CEC2', color: '#6B5240' }}
+        >
+          Live data
+        </span>
+      </div>
+
+      {/* Messages */}
+      <div className="flex flex-col gap-2 px-4 py-3 max-h-48 overflow-y-auto">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div
+              className="text-xs leading-relaxed px-3 py-2 rounded-2xl max-w-[85%]"
+              style={{
+                backgroundColor: m.role === 'user' ? '#6B5240' : '#D9CEC2',
+                color: m.role === 'user' ? '#F5EFE6' : '#1C1A18',
+                borderBottomRightRadius: m.role === 'user' ? '4px' : undefined,
+                borderBottomLeftRadius: m.role === 'ai' ? '4px' : undefined,
+              }}
+            >
+              {m.text}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex justify-start">
+            <div className="px-3 py-2 rounded-2xl rounded-bl-sm" style={{ backgroundColor: '#D9CEC2' }}>
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: '#8B7355', animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: '#8B7355', animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: '#8B7355', animationDelay: '300ms' }} />
+              </span>
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input */}
+      <form onSubmit={handleSend} className="flex items-center gap-2 px-3 pb-3">
+        <input
+          type="text"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="e.g. I need a table for 4 people"
+          className="flex-1 text-xs rounded-full px-4 py-2.5 outline-none focus:ring-1"
+          style={{
+            backgroundColor: '#D9CEC2',
+            color: '#1C1A18',
+            border: '1.5px solid transparent',
+          }}
+          onFocus={e => (e.target.style.borderColor = '#8B7355')}
+          onBlur={e => (e.target.style.borderColor = 'transparent')}
+          disabled={loading}
+        />
+        <button
+          type="submit"
+          disabled={loading || !input.trim()}
+          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-opacity disabled:opacity-40"
+          style={{ backgroundColor: '#6B5240' }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </form>
     </div>
   )
 }
