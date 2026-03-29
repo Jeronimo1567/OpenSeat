@@ -132,7 +132,7 @@ export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs
               src="/Untitled_Artwork.png"
               alt="OpenSeat"
               className="mx-auto mb-2"
-              style={{ height: '2.2rem', width: 'auto', mixBlendMode: 'multiply' }}
+              style={{ height: '3.5rem', width: 'auto', mixBlendMode: 'multiply' }}
             />
             <p className="text-sm leading-relaxed" style={{ color: '#7A6E64' }}>
               Oakland University · Study reservation
@@ -281,7 +281,9 @@ export default function ReserveForm({ spotId, spotName, spotLocation, spotChairs
           </form>
 
           {/* AI Chat */}
-          <SpotChat />
+          <div className="mt-4">
+            <SpotChat />
+          </div>
         </div>
       </div>
     </div>
